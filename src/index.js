@@ -131,9 +131,13 @@ async function registerReminder(interaction) {
 
         let _embeds = JSON.parse(JSON.stringify(embedsInfo));
         let _localizedTime = moment(targetTime).locale('ja').format('llll');
+
+        // 過去時間で予約された場合即時投稿される旨のメッセージを通知
+        let _postTime = (moment(targetTime) <= moment()) ? `1分以内に` : `${_localizedTime} 頃`;
+
         _embeds.fields.push({
             name: "",
-            value: `[このメッセージ](${msg.url})が <#${targetChannel}> チャンネルに ${_localizedTime} 頃投稿されるはずニャ〜`
+            value: `[このメッセージ](${msg.url})が <#${targetChannel}> チャンネルに ${_postTime}投稿されるはずニャ〜`
         });
         _embeds.footer.text = savedReminder._id;
         interaction.reply({ embeds: [_embeds] });
