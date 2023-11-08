@@ -1,4 +1,4 @@
-require('dotenv').config();
+require('dotenv-flow').config();
 const mongoose = require('mongoose');
 const moment = require('moment-timezone');
 const { Client, Events, AttachmentBuilder, GatewayIntentBits } = require('discord.js');
@@ -22,6 +22,7 @@ const client = new Client({
         // MongoDB接続
         await mongoose.connect(process.env.DB_URI);
         logger.info(`NODE_ENV=${process.env.NODE_ENV}`);
+        logger.info(`SERVER_ID=${process.env.SERVER_ID}`);
         logger.info("Successfully connected to MongoDB Atlas!")
     } catch (error) {
         logger.error(error);

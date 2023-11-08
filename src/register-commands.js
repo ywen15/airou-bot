@@ -1,4 +1,4 @@
-require('dotenv').config();
+require('dotenv-flow').config();
 const { REST, Routes, ApplicationCommandOptionType } = require('discord.js');
 
 const commands = [
