@@ -13,17 +13,17 @@ const commands = [
                 required: true
             },
             {
-                name: "time",
-                description: "予約投稿する時刻(YYYY-MM-DD HH:mm:ss)",
-                type: ApplicationCommandOptionType.String,
-                required: true
-            },
-            {
                 name: "message",
                 description: "予約投稿するメッセージのID",
                 type: ApplicationCommandOptionType.String,
                 required: true
-            }
+            },
+            {
+                name: "time",
+                description: "予約投稿する時刻(YYYY-MM-DD HH:mm)。指定なしで即時投稿",
+                type: ApplicationCommandOptionType.String,
+                required: false
+            },
         ]
     }
 ];
@@ -33,6 +33,8 @@ const rest = new REST({ version: "10" }).setToken(process.env.DISCORD_TOKEN);
 (async () => {
     try {
         console.log("Registering bot slash commands...");
+        console.log("BOT_ID=", process.env.BOT_ID);
+        console.log("SERVER_ID=", process.env.SERVER_ID);
 
         await rest.put(
             Routes.applicationGuildCommands(process.env.BOT_ID, process.env.SERVER_ID),
