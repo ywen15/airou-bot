@@ -175,7 +175,7 @@ async function getOfficialNews() {
     links.forEach(a => {
         const attrVal = a.getAttribute("href");
         if (attrVal.startsWith(process.env.URL_NEWS)) {
-            postUpdateInfo(attrVal, "news");
+            postUpdateInfo(process.env.URL_OFFICIAL + attrVal, "news");
         }
     })
 }
@@ -221,6 +221,10 @@ async function postUpdateInfo(url, type) {
 
         case "bug-fix":
             msg += "#バグ情報";
+            break;
+
+        case "news":
+            msg += "#お知らせ";
             break;
 
         default:
