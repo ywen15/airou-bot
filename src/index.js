@@ -1,4 +1,5 @@
 require('dotenv-flow').config();
+const http = require('http');
 const mongoose = require('mongoose');
 const moment = require('moment-timezone');
 const { Client, Events, AttachmentBuilder, GatewayIntentBits } = require('discord.js');
@@ -67,6 +68,10 @@ client.on(Events.MessageDelete, async (message) => {
 
 // Botログイン
 client.login(process.env.DISCORD_TOKEN);
+
+http.createServer((req, res) => {
+    res.end("OK");
+}).listen(process.env.PORT, process.env.ADDRESS, () => { console.log("Server started!") });
 
 // メッセージ投稿処理
 async function post(targetChannel, msg, attachments) {
