@@ -2,6 +2,7 @@ require('dotenv-flow').config();
 const http = require('http');
 const mongoose = require('mongoose');
 const moment = require('moment-timezone');
+moment.tz.setDefault("Asia/Tokyo");
 const { Client, Events, AttachmentBuilder, GatewayIntentBits } = require('discord.js');
 var HTMLParser = require("node-html-parser");
 
@@ -42,7 +43,7 @@ const client = new Client({
 
 // Bot起動確認
 client.once(Events.ClientReady, () => {
-    console.log("Messsage reservation bot started!");
+    console.log("Airou bot started!");
 });
 
 // Botアクションリスナー
@@ -116,10 +117,10 @@ async function checkForReminders() {
 // 予約投稿の登録処理
 async function registerReminder(interaction) {
     const targetChannel = interaction.options.get("channel").value;
-    let targetTime = interaction.options.get("time").value;
+    let targetTime = interaction.options.get("time")?.value;
     const msgId = interaction.options.get("message").value;
 
-    if (targetTime.toLowerCase() === "now") {
+    if (!targetTime || targetTime.toLowerCase() === "now") {
         targetTime = moment();
     } else if (!moment(targetTime, "YYYY-MM-DD HH:mm", true).isValid()) {
         let _embeds = JSON.parse(JSON.stringify(embedsErr));
@@ -186,15 +187,18 @@ async function getUpdateInfo() {
     const body = await res.text();
     const html = await HTMLParser.parse(body);
     const links = html?.querySelectorAll("a");
+
     links.forEach(a => {
         const attrVal = a.getAttribute("href");
-        if (attrVal.startsWith(process.env.URL_FORUM)) {
+        if (attrVal.startsWith(process.env.URL_FORUM + process.env.TOPIC_PATH)) {
             if (attrVal.includes("release-information")) {
                 postUpdateInfo(attrVal, "client-update");
 
             } else if (attrVal.includes("server-update-information")) {
                 postUpdateInfo(attrVal, "server-update");
 
+            } else {
+                postUpdateInfo(attrVal, "news");
             }
         }
     })
@@ -256,12 +260,11 @@ async function getBugInfo() {
     const body = await res.text();
     const html = await HTMLParser.parse(body);
     const links = html?.querySelectorAll("a");
+
     links.forEach(a => {
         const attrVal = a.getAttribute("href");
-        if (attrVal.startsWith(process.env.URL_FORUM)) {
-            if (attrVal.includes("/t/")) {
-                postUpdateInfo(a.getAttribute("href"), "bug-fix");
-            }
+        if (attrVal.startsWith(process.env.URL_FORUM + process.env.TOPIC_PATH)) {
+            postUpdateInfo(attrVal, "bug-fix");
         }
     })
 }
