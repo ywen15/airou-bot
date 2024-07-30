@@ -139,7 +139,7 @@ async function registerReminder(interaction) {
             targetMessageId: msgId,
             content: msg.content,
             attachments: attachments,
-            scheduledAt: targetTime.tz("Asia/Tokyo").format(),
+            scheduledAt: targetTime.tz("Asia/Tokyo"),
             createdBy: msg.author.id
         });
         const savedReminder = await reminder.save();
