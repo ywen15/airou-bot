@@ -122,7 +122,9 @@ async function registerReminder(interaction) {
 
     if (!targetTime || targetTime.toLowerCase() === "now") {
         targetTime = moment();
-    } else if (!moment(targetTime, "YYYY-MM-DD HH:mm", true).isValid()) {
+    } else if (moment(targetTime, "YYYY-MM-DD HH:mm", true).isValid()) {
+        targetTime = moment.tz(targetTime, "YYYY-MM-DD HH:mm", "Asia/Tokyo");
+    } else {
         let _embeds = JSON.parse(JSON.stringify(embedsErr));
         _embeds.fields.push({ name: "", value: "日時のフォーマットが正しくないニャ" });
         _embeds.fields.push({ name: "", value: "YYYY-MM-DD HH:mm フォーマットで指定するニャ" });
@@ -139,7 +141,7 @@ async function registerReminder(interaction) {
             targetMessageId: msgId,
             content: msg.content,
             attachments: attachments,
-            scheduledAt: targetTime.tz("Asia/Tokyo"),
+            scheduledAt: targetTime,
             createdBy: msg.author.id
         });
         const savedReminder = await reminder.save();
